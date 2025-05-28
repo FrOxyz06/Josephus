@@ -32,7 +32,7 @@ public class JosephusSim {
          }
           
          // remember the last node as the one in front of the next to get eliminated
-         last = track.next;
+         last = circle;
          
          // generate, print, and save the random elimination count
          Random random = new Random();
@@ -53,16 +53,22 @@ public class JosephusSim {
    
    public void eliminate() {
       // count to the elimination count
-      
+      for(int i = 0 ; i < eliminationCount ; i++){
+         track = track.next;
+      }
       // print who will be eliminated
       
+      PersonNode eliminated = track.next;
+      
       // eliminate the person and update "front" of the circle and size
-
+      track = eliminated.next;
+      size--;
    }
    
    public boolean isOver() {
       // check if there's only one person left in the circle
-      return false;
+      
+      return size == 1;
    }
    
    public String toString() {
