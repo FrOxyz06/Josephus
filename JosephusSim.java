@@ -10,100 +10,104 @@ public class JosephusSim {
 
    public JosephusSim(String fileName) {
       try {
-         // load names from the file in order, generating a singly linked list of PersonNodes
+         // Read names from the file to build the circle
          Scanner file = new Scanner(new File(fileName));
-          PersonNode last = null;
-         // make the ring circular by attaching last node's next to front
-         
-         while(file.hasNext()){
+         PersonNode last = null;
+
+         // Build the circular linked list from the file
+         while (file.hasNext()) {
             String name = file.next();
-           
             PersonNode current = new PersonNode(name);
-            
-            if(circle == null){
+
+            // If this is the first node, set it as the circle start
+            if (circle == null) {
                circle = current;
                last = current;
-            }else{
+            } else {
+               // Link the current node to the list
                last.next = current;
                last = current;
-            
             }
-            size++;
-         }
-          
-         // remember the last node as the one in front of the next to get eliminated
-        if (last != null) {
-            last.next = circle; // make it circular
-        }
-         
-         // generate, print, and save the random elimination count
-         Random random = new Random();
-         
-         eliminationCount = random.nextInt(1 , size/2);
-         System.out.println("=== Elimination count is "+ eliminationCount +" ===");
-         
-         
 
-      } catch(FileNotFoundException e) {
+            size++;  
+         }
+
+         // Complete the circle by linking the last node to the first
+         if (last != null) {
+            last.next = circle;
+         }
+
+         // Generate a random elimination count between 1 and size/2
+         Random random = new Random();
+         eliminationCount = random.nextInt(1, size / 2);
+         System.out.println("=== Elimination count is " + eliminationCount + " ===");
+
+      } catch (FileNotFoundException e) {
          System.out.println("Something went wrong with " + fileName);
       }
    }
-   
-   // optional helper method for constructing the circle
-   private void add(String val) {
-   }
-   
+
    public void eliminate() {
-    for (int i = 1; i < eliminationCount; i++) {
-        track = track.next;
-    }
+      for (int i = 1; i < eliminationCount; i++) {
+         track = track.next;
+      }
 
-    PersonNode eliminated = track;
-    System.out.println("Eliminated: " + eliminated.name);
+      PersonNode eliminated = track; // The person to be eliminated
+      System.out.println("Eliminated: " + eliminated.name);
 
-    track.next = eliminated.next;
-    if (eliminated == circle) {
-        circle = eliminated.next;
-    }
+      // Remove the eliminated person from the circle
+      track.next = eliminated.next;
 
-    track = track.next;
+      // If the eliminated person is the start of the circle, update the circle reference
+      if (eliminated == circle) {
+         circle = eliminated.next;
+      }
 
-    size--;
-}
-   
+      // Move the tracker forward for the next elimination round
+      track = track.next;
+
+      // Decrease the size of the circle
+      size--;
+   }
+
    public boolean isOver() {
-      // check if there's only one person left in the circle
       return size == 1;
    }
-   
-   public String toString() {
-       if (circle == null) {
-           return "";
-       }
-  
-       String result = "";
-       if (isOver()) {
-           result += "Last survivor: " + circle.name;
-       } else {
-           if (track == null) {
-               track = circle; 
-           }
-   
-           PersonNode start = track;
-           int count = 1;
-   
-           do {
-               result += count + "-" + track.name + " ";
-               track = track.next;
-               count++;
-           } while (track != start);
-       }
-   
-       return result;
-   }
 
+   public String toString() {
+      if (circle == null) {
+         return "";
+      }
+
+      String result = "";
+
+      // If there's only one person left, display the survivor
+      if (isOver()) {
+         result += "Last survivor: " + circle.name;
+      } else {
+         // If this is the first call, initialize the tracker
+         if (track == null) {
+            track = circle;
+         }
+
+         // Traverse and print all remaining people in the circle
+         PersonNode start = track;
+         int count = 1;
+
+         do {
+            result += count + "-" + track.name + " ";
+            track = track.next;
+            count++;
+         } while (track != start);
+      }
+
+      return result;
+   }
+   
 
 }
+
+
 /*
  === Elimination count is 4 ===
  1-Muhammad 2-Beza 3-Ibrar 4-Nur 5-Krystal 6-River 7-Soham 8-Leon 9-Will 10-Qiao 
